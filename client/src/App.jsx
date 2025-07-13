@@ -22,13 +22,11 @@ import Footer from "./components/Footer/Footer";
 import ProtectedRoute from "./components/Protected/ProtectedRoute";
 import ViewProfil from "./pages/ViewProfil";
 import NotFound from "./pages/NotFound";
-import UmmahBook from "./pages/UmmahBook";
-import BookDetail from "./pages/BookDetail";
-import UmmahPartner from "./pages/UmmahPartner";
 import BukuSaya from "./pages/BukuSaya";
 import FloatingMaskot from "./components/FloatingMaskot/FloatingMaskot";
 import UmmahBook from "./pages/UmmahBook";
 import UmmahPartner from "./pages/UmmahPatner";
+import BookDetail from "./pages/BookDetail";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -77,6 +75,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Beranda />} />
         <Route path="/ummah-book" element={<UmmahBook />} />
+        <Route path="/book/:id" element={<BookDetail />} />
         <Route path="/ummah-partner" element={<UmmahPartner />} />
         <Route path="/daftar" element={<Daftar />} />
         <Route path="/masuk" element={<Masuk />} />

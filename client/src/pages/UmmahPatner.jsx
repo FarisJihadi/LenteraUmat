@@ -58,10 +58,6 @@ export default function UmmahPartner() {
   const [quizType, setQuizType] = useState("multipleChoice");
   const [numQuestions, setNumQuestions] = useState(3);
   const [quizQuestions, setQuizQuestions] = useState([]);
-
-  // --- Efek Samping ---
-
-  // Scroll ke bawah setiap kali chatHistory berubah
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -120,8 +116,6 @@ export default function UmmahPartner() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  // --- Riwayat Chat ---
 
   // Ambil riwayat chat saat user tersedia
   useEffect(() => {
@@ -203,7 +197,7 @@ export default function UmmahPartner() {
       text: "Sesi chat ini akan dihapus permanen!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#F79319", // Warna sesuai palet
+      confirmButtonColor: "#316B6C", // Warna sesuai palet
       cancelButtonColor: "#d33",
       confirmButtonText: "Ya, hapus!",
     }).then(async (result) => {
@@ -662,14 +656,14 @@ export default function UmmahPartner() {
     <div className="flex flex-col md:flex-row h-screen bg-gray-100 font-inter">
       {/* Panel Kiri: Kontrol Fitur */}
       <div className="w-full md:w-1/3 lg:w-1/4 bg-white p-6 shadow-lg flex flex-col overflow-y-auto rounded-lg md:rounded-r-none">
-        <h2 className="text-2xl font-bold text-center text-primary-dark mb-6">UmmahPartner AI</h2>
+        <h2 className="text-2xl font-bold text-center text-primary mb-6">Ummah Partner </h2>
 
         {/* Tombol Navigasi Mode */}
         <div className="grid grid-cols-2 gap-3 mb-6 border-b pb-4 border-gray-200">
           <button
             onClick={() => setCurrentMode("chat")}
             className={`flex items-center justify-center px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-              currentMode === "chat" ? "bg-[#F79319] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              currentMode === "chat" ? "bg-[#316B6C] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
             <FaRobot className="mr-2" /> Chat Umum
@@ -677,7 +671,7 @@ export default function UmmahPartner() {
           <button
             onClick={() => setCurrentMode("askPdf")}
             className={`flex items-center justify-center px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-              currentMode === "askPdf" ? "bg-[#F79319] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              currentMode === "askPdf" ? "bg-[#316B6C] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
             <FaFilePdf className="mr-2" /> Tanya PDF
@@ -685,7 +679,7 @@ export default function UmmahPartner() {
           <button
             onClick={() => setCurrentMode("summarizePdf")}
             className={`flex items-center justify-center px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-              currentMode === "summarizePdf" ? "bg-[#F79319] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              currentMode === "summarizePdf" ? "bg-[#316B6C] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
             <FaBookOpen className="mr-2" /> Ringkas PDF
@@ -693,7 +687,7 @@ export default function UmmahPartner() {
           <button
             onClick={() => setCurrentMode("quiz")}
             className={`flex items-center justify-center px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-              currentMode === "quiz" ? "bg-[#F79319] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              currentMode === "quiz" ? "bg-[#316B6C] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
             <FaQuestionCircle className="mr-2" /> Buat Kuis
@@ -837,7 +831,7 @@ export default function UmmahPartner() {
             ></textarea>
             <button
               onClick={handleAskPdfSubmit}
-              className="w-full bg-[#F79319] text-white py-3 rounded-xl font-semibold hover:bg-[#F79319]-dark transition-colors duration-300 disabled:opacity-50 shadow-md"
+              className="w-full bg-[#316B6C] text-white py-3 rounded-xl font-semibold hover:bg-[#316B6C]-dark transition-colors duration-300 disabled:opacity-50 shadow-md"
               disabled={isLoading || isPdfProcessing || !pdfTextContent.trim() || !askPdfQuestion.trim()}
             >
               Tanya AI
@@ -851,7 +845,7 @@ export default function UmmahPartner() {
             <p className="text-sm text-gray-600">Klik tombol di bawah untuk mendapatkan ringkasan poin-poin penting dari materi PDF yang dipilih.</p>
             <button
               onClick={handleSummarizePdf}
-              className="w-full bg-[#F79319] text-white py-3 rounded-xl font-semibold hover:bg-[#F79319]-dark transition-colors duration-300 disabled:opacity-50 shadow-md"
+              className="w-full bg-[#316B6C] text-white py-3 rounded-xl font-semibold hover:bg-[#316B6C]-dark transition-colors duration-300 disabled:opacity-50 shadow-md"
               disabled={isLoading || isPdfProcessing || !pdfTextContent.trim()}
             >
               Ringkas PDF
@@ -908,7 +902,7 @@ export default function UmmahPartner() {
             </div>
             <button
               onClick={handleGenerateQuiz}
-              className="w-full bg-[#F79319] text-white py-3 rounded-xl font-semibold hover:bg-[#F79319]-dark transition-colors duration-300 disabled:opacity-50 shadow-md"
+              className="w-full bg-[#316B6C] text-white py-3 rounded-xl font-semibold hover:bg-[#316B6C]-dark transition-colors duration-300 disabled:opacity-50 shadow-md"
               disabled={isLoading || isPdfProcessing || !pdfTextContent.trim()}
             >
               Generate Kuis
@@ -948,11 +942,11 @@ export default function UmmahPartner() {
 
       {/* Area Chat / Respon AI */}
       <div className="flex-1 flex flex-col bg-white shadow-lg md:ml-4 rounded-lg md:rounded-l-none">
-        <div className="p-4 bg-[#F79319] text-white text-center text-xl font-semibold rounded-t-lg shadow-md">Obrolan dengan UmmahPartner AI</div>
+        <div className="p-4 bg-[#316B6C] text-white text-center text-xl font-semibold rounded-t-lg shadow-md">Obrolan dengan Lumma AI</div>
         <div ref={chatContainerRef} className="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50">
           {chatHistory.length === 0 ? (
             <div className="text-center text-gray-500 mt-10 p-4 bg-white rounded-xl shadow-sm">
-              <p className="text-lg mb-2">Selamat datang di UmmahPartner AI!</p>
+              <p className="text-lg mb-2">Halo aku Luma AI!</p>
               <p className="text-sm">Mulai chat baru atau klik "Lihat Riwayat Percakapan" di panel kiri untuk melanjutkan sesi lama.</p>
             </div>
           ) : (
@@ -1012,7 +1006,7 @@ export default function UmmahPartner() {
                 }}
                 disabled={isLoading}
               />
-              <button type="submit" className="bg-[#F79319] text-white p-3 rounded-full hover:bg-[#F79319]-dark transition-colors duration-300 disabled:opacity-50 shadow-md" disabled={isLoading || !inputMessage.trim()}>
+              <button type="submit" className="bg-[#316B6C] text-white p-3 rounded-full hover:bg-[#316B6C]-dark transition-colors duration-300 disabled:opacity-50 shadow-md" disabled={isLoading || !inputMessage.trim()}>
                 <FaPaperPlane className="text-lg" />
               </button>
             </div>
@@ -1024,7 +1018,7 @@ export default function UmmahPartner() {
       {showHistoryModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col">
-            <div className="p-5 border-b border-gray-200 flex justify-between items-center bg-[#F79319] rounded-t-xl">
+            <div className="p-5 border-b border-gray-200 flex justify-between items-center bg-[#316B6C] rounded-t-xl">
               <h3 className="text-xl font-semibold text-white">Riwayat Percakapan</h3>
               <button onClick={() => setShowHistoryModal(false)} className="text-white hover:text-gray-200">
                 <FaTimes className="text-2xl" />
@@ -1046,7 +1040,7 @@ export default function UmmahPartner() {
                     <li
                       key={session._id}
                       className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                        currentChatSessionId === session._id ? "bg-[#F79319] text-primary-dark font-semibold shadow-inner" : "bg-gray-100 hover:bg-gray-200"
+                        currentChatSessionId === session._id ? "bg-[#316B6C] text-primary-dark font-semibold shadow-inner" : "bg-gray-100 hover:bg-gray-200"
                       }`}
                       onClick={() => loadChatSession(session._id)}
                     >
