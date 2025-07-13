@@ -1,7 +1,13 @@
-import { FaFacebook, FaInstagram, FaWhatsapp, FaXTwitter, FaYoutube } from "react-icons/fa6";
+import {
+  FaFacebook,
+  FaInstagram,
+  FaWhatsapp,
+  FaXTwitter,
+  FaYoutube,
+} from "react-icons/fa6";
 import { FaPhoneAlt } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
-import setarainLogo2 from "../../assets/Navbar/setarain2.png";
+import setarainLogo2 from "../../assets/Navbar/lenteraumat.svg";
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
@@ -9,13 +15,19 @@ import { UserContext } from "../../context/UserContext";
 export default function Footer() {
   const { user } = useContext(UserContext);
   return (
-    <footer className="bg-primary-dark text-grey-500 text-body-sm mt-64">
+    <footer className="bg-primary-dark text-grey-500 text-body-sm mt-20">
       <div className="max-w-7xl mx-auto px-6 md:px-20 py-16 grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
         <div className="flex flex-col gap-10">
-          <img src={setarainLogo2} className="w-36 -translate-y-4 -translate-x-2" alt="" />
+          <img
+            src={setarainLogo2}
+            className="w-36 -translate-y-4 -translate-x-2"
+            alt=""
+          />
           {/* Social Media */}
           <div className="flex flex-col gap-2">
-            <span className="text-white font-semibold text-body-sm mb-2">SOCIAL MEDIA</span>
+            <span className="text-white font-semibold text-body-sm mb-2">
+              SOCIAL MEDIA
+            </span>
             <div className="flex gap-4">
               <FaFacebook size={24} className="text-white cursor-pointer" />
               <FaInstagram size={24} className="text-white cursor-pointer" />
@@ -27,7 +39,9 @@ export default function Footer() {
 
         {/* Hubungi Kami */}
         <div className="flex flex-col gap-6">
-          <span className="text-white font-semibold text-body-sm">HUBUNGI KAMI</span>
+          <span className="text-white font-semibold text-body-sm">
+            HUBUNGI KAMI
+          </span>
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
               <FaPhoneAlt className="text-white" />
@@ -38,14 +52,16 @@ export default function Footer() {
             </div>
             <div className="flex items-center gap-2">
               <MdEmail className="text-white" />
-              <span>contact@setarain.com</span>
+              <span>contact@LenteraUmat.com</span>
             </div>
           </div>
         </div>
 
         {/* Menu */}
         <div className="flex flex-col gap-6">
-          <span className="text-white font-semibold text-body-sm">SETARAIN</span>
+          <span className="text-white font-semibold text-body-sm">
+            Lentera Umat
+          </span>
           <div className="flex flex-col gap-2">
             <Link to={"/"} className="hover:underline">
               Beranda
@@ -73,7 +89,9 @@ export default function Footer() {
       <div className="border-t border-gray-700 mx-4"></div>
 
       {/* Copyright */}
-      <div className="text-center py-6 text-body-xs text-grey-500">Copyright © 2025 Setarain. All rights reserved.</div>
+      <div className="text-center py-6 text-body-xs text-grey-500">
+        Copyright © 2025 Lentera Umat. All rights reserved.
+      </div>
     </footer>
   );
 }
