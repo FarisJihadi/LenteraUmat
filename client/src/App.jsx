@@ -27,6 +27,7 @@ import FloatingMaskot from "./components/FloatingMaskot/FloatingMaskot";
 import UmmahBook from "./pages/UmmahBook";
 import UmmahPartner from "./pages/UmmahPatner";
 import BookDetail from "./pages/BookDetail";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -81,6 +82,7 @@ function App() {
         <Route path="/masuk" element={<Masuk />} />
         <Route path="/artikel" element={<Artikel />} />
         <Route path="/upload-donasi" element={<UploadDonasi />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route
           path="/permohonan-saya"
           element={

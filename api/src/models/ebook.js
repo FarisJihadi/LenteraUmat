@@ -39,6 +39,11 @@ const EbookSchema = new Schema(
       type: String,
       required: true,
     },
+    statusMateri: {
+      type: String,
+      required: true,
+      default: "belum terverifikasi",
+    },
     disimpan: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }

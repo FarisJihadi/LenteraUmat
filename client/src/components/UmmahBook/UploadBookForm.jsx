@@ -1,35 +1,193 @@
-import { useState } from 'react';
+import React, { useState, useContext, useRef } from "react";
+import { axiosInstance } from "../../config"; // Pastikan path ini benar
+import upload from "../../utils/upload"; // Pastikan path ini benar
+import { UserContext } from "../../context/UserContext"; // Pastikan path ini benar
+import Swal from "sweetalert2"; // Untuk notifikasi loading (Swal.fire)
+import { ToastContainer, toast } from "react-toastify"; // Import ToastContainer dan
 
+// Komponen pembantu untuk menampilkan pratinjau file yang dipilih
 const FilePreview = ({ file, onClear }) => (
   <div className="mt-2 text-sm text-center">
     <p className="font-semibold truncate">{file.name}</p>
     <button type="button" onClick={onClear} className="text-red-500 hover:text-red-700 text-xs">
-      Remove
+      Hapus
     </button>
   </div>
 );
 
-function UploadBookForm({ onUpload }) {
-  const [judul, setJudul] = useState('');
-  const [sampul, setSampul] = useState(null);
-  const [filePdf, setFilePdf] = useState(null);
-  const [penerbit, setPenerbit] = useState('');
-  const [isbn, setIsbn] = useState('');
-  const [edisi, setEdisi] = useState('');
-  const [penulis, setPenulis] = useState('');
+function UploadBookForm({ onUploadSuccess }) {
+  const { user } = useContext(UserContext);
+  const [judul, setJudul] = useState("");
+  const [sampul, setSampul] = useState(null); // File object for cover image
+  const [sampulPreviewUrl, setSampulPreviewUrl] = useState(null); // URL untuk pratinjau sampul
+  const [filePdf, setFilePdf] = useState(null); // File object for PDF
+  const [filePdfPreview, setFilePdfPreview] = useState(null); // Pratinjau untuk PDF (nama file saja)
+  const [penerbit, setPenerbit] = useState("");
+  const [isbn, setIsbn] = useState("");
+  const [edisi, setEdisi] = useState("");
+  const [penulis, setPenulis] = useState("");
+  const [kategori, setKategori] = useState("");
+  const [loading, setLoading] = useState(false); // State untuk indikator loading
 
-  const handleSubmit = (e) => {
+  const sampulInputRef = useRef(null); // Ref untuk input file sampul
+  const pdfInputRef = useRef(null); // Ref untuk input file PDF
+
+  // Fungsi untuk menangani perubahan file sampul (baik dari input maupun drag-drop)
+  const handleSampulChange = (file) => {
+    if (sampulPreviewUrl) {
+      URL.revokeObjectURL(sampulPreviewUrl); // Hapus URL pratinjau sebelumnya untuk mencegah memory leak
+    }
+    if (file) {
+      setSampul(file);
+      setSampulPreviewUrl(URL.createObjectURL(file));
+    } else {
+      setSampul(null);
+      setSampulPreviewUrl(null);
+    }
+  };
+
+  // Fungsi untuk menangani perubahan file PDF
+  const handlePdfChange = (file) => {
+    if (file) {
+      setFilePdf(file);
+      setFilePdfPreview({ name: file.name });
+    } else {
+      setFilePdf(null);
+      setFilePdfPreview(null);
+    }
+  };
+
+  // Drag & Drop Handlers untuk Sampul
+  const handleDragOverSampul = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append('title', judul);
-    formData.append('coverImage', sampul);
-    formData.append('pdfFile', filePdf);
-    formData.append('publisher', penerbit);
-    formData.append('isbn', isbn);
-    formData.append('edition', edisi);
-    formData.append('author', penulis);
+    e.stopPropagation();
+    e.currentTarget.classList.add("border-teal-500", "bg-gray-50"); // Tambah efek visual saat drag over
+  };
 
-    onUpload(formData);
+  const handleDragLeaveSampul = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove("border-teal-500", "bg-gray-50"); // Hapus efek visual
+  };
+
+  const handleDropSampul = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove("border-teal-500", "bg-gray-50"); // Hapus efek visual
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith("image/")) {
+        // Pastikan hanya menerima gambar
+        handleSampulChange(file);
+      } else {
+        toast.error("Hanya file gambar (JPEG, PNG) yang diizinkan untuk sampul.");
+      }
+    }
+  };
+
+  // Drag & Drop Handlers untuk PDF
+  const handleDragOverPdf = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.add("border-teal-500", "bg-gray-50");
+  };
+
+  const handleDragLeavePdf = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove("border-teal-500", "bg-gray-50");
+  };
+
+  const handleDropPdf = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    e.currentTarget.classList.remove("border-teal-500", "bg-gray-50");
+
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (file.type === "application/pdf") {
+        // Pastikan hanya menerima PDF
+        handlePdfChange(file);
+      } else {
+        toast.error("Hanya file PDF yang diizinkan untuk materi.");
+      }
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validasi dasar
+    if (!judul || !sampul || !filePdf || !penulis || !kategori) {
+      toast.warn("Harap lengkapi semua bidang yang wajib diisi!");
+      return;
+    }
+
+    if (!user?._id) {
+      toast.error("Anda harus login untuk mengunggah materi.");
+      return;
+    }
+
+    setLoading(true);
+    Swal.fire({
+      // Menggunakan Swal.fire untuk loading overlay
+      title: "Mengunggah Materi...",
+      text: "Mohon tunggu, materi Anda sedang diproses.",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    try {
+      // Unggah sampul buku
+      const coverImageUrl = await upload(sampul);
+      // Unggah file PDF
+      const pdfUrl = await upload(filePdf);
+
+      // Siapkan data untuk dikirim ke API
+      const formDataToSend = {
+        materiUid: user._id, // Menggunakan ID pengguna sebagai materiUid
+        coverMateri: coverImageUrl,
+        judulMateri: judul,
+        linkMateri: pdfUrl,
+        kategori: kategori,
+        penerbit: penerbit,
+        judulISBN: isbn,
+        edisi: edisi,
+        penulis: penulis,
+        statusMateri: "belum terverifikasi", // Default status untuk materi baru
+        disimpan: [], // Awalnya kosong
+      };
+
+      // Kirim data ke API
+      const res = await axiosInstance.post("/materi/create", formDataToSend);
+
+      toast.success("Materi Anda berhasil diunggah dan menunggu verifikasi admin."); // Menggunakan react-toastify
+
+      // Reset form setelah sukses
+      setJudul("");
+      handleSampulChange(null); // Reset sampul dan pratinjau
+      handlePdfChange(null); // Reset PDF dan pratinjau
+      setPenerbit("");
+      setIsbn("");
+      setEdisi("");
+      setPenulis("");
+      setKategori("");
+      // Panggil callback jika ada
+      if (onUploadSuccess) {
+        onUploadSuccess(res.data.materi);
+      }
+    } catch (error) {
+      console.error("Gagal mengunggah materi:", error);
+      toast.error("Terjadi kesalahan saat mengunggah materi. Silakan coba lagi."); // Menggunakan react-toastify
+    } finally {
+      setLoading(false);
+      Swal.close(); // Tutup loading Swal
+    }
   };
 
   return (
@@ -40,85 +198,204 @@ function UploadBookForm({ onUpload }) {
         </svg>
         Upload Buku
       </h3>
-
       <form onSubmit={handleSubmit} className="space-y-5">
-        
         {/* Judul Buku */}
         <div>
-          <label htmlFor="judul-buku" className="block text-sm font-medium text-gray-700 mb-1">Judul Buku</label>
-          <input type="text" id="judul-buku" value={judul} onChange={(e) => setJudul(e.target.value)} placeholder="Ketikkan Judul Buku" className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm" required />
+          <label htmlFor="judul-buku" className="block text-sm font-medium text-gray-700 mb-1">
+            Judul Buku <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="judul-buku"
+            value={judul}
+            onChange={(e) => setJudul(e.target.value)}
+            placeholder="Ketikkan Judul Buku"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+            required
+          />
+        </div>
+
+        {/* Kategori */}
+        <div>
+          <label htmlFor="kategori" className="block text-sm font-medium text-gray-700 mb-1">
+            Kategori <span className="text-red-500">*</span>
+          </label>
+          <select
+            id="kategori"
+            value={kategori}
+            onChange={(e) => setKategori(e.target.value)}
+            required
+            className="block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+          >
+            <option value="" disabled>
+              Pilih Kategori
+            </option>
+            <option value="SD/MI">SD/MI</option>
+            <option value="SMP/MTs">SMP/MTs</option>
+            <option value="SMA/MA">SMA/MA</option>
+            <option value="Umum">Umum</option>
+            <option value="SMK">SMK</option>
+          </select>
         </div>
 
         {/* Upload Sampul */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Upload Sampul Buku</label>
-          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Upload Sampul Buku <span className="text-red-500">*</span>
+          </label>
+          {/* Area Drag and Drop yang bisa diklik */}
+          <label
+            htmlFor="sampul-buku"
+            className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer transition-all duration-200 hover:border-teal-500 hover:bg-gray-50"
+            onDragOver={handleDragOverSampul}
+            onDragLeave={handleDragLeaveSampul}
+            onDrop={handleDropSampul}
+          >
             <div className="space-y-1 text-center">
-              <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <div className="flex text-sm text-gray-600">
-                <label htmlFor="sampul-buku" className="relative cursor-pointer bg-white rounded-md font-medium text-teal-600 hover:text-teal-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-teal-500">
-                  <span>Upload a file</span>
-                  <input id="sampul-buku" name="sampul-buku" type="file" className="sr-only" onChange={(e) => setSampul(e.target.files[0])} accept="image/jpeg, image/png, application/pdf" />
-                </label>
+              {sampulPreviewUrl ? (
+                <img src={sampulPreviewUrl} alt="Sampul Preview" className="mx-auto h-32 w-auto object-contain rounded-md mb-2" />
+              ) : (
+                <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                  <path
+                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
+              <div className="flex text-sm text-gray-600 justify-center">
+                <p className="font-medium text-teal-600 hover:text-teal-500">Upload a file</p>
                 <p className="pl-1">or drag and drop</p>
               </div>
-              <p className="text-xs text-gray-500">JPEG, JPG, PNG, PDF (5MB, Maksimal [n] Gambar/File)</p>
+              <p className="text-xs text-gray-500">JPEG, JPG, PNG (maks 5MB)</p>
             </div>
-          </div>
-          {sampul && <FilePreview file={sampul} onClear={() => setSampul(null)} />}
+          </label>
+          <input
+            id="sampul-buku"
+            name="sampul-buku"
+            type="file"
+            ref={sampulInputRef} // Menghubungkan ref
+            className="sr-only"
+            onChange={(e) => handleSampulChange(e.target.files[0])}
+            accept="image/jpeg, image/png"
+            required
+          />
+          {sampul && <FilePreview file={sampul} onClear={() => handleSampulChange(null)} />}
         </div>
-        
+
         {/* Upload PDF */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Upload File PDF</label>
-          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Upload File PDF <span className="text-red-500">*</span>
+          </label>
+          {/* Area Drag and Drop yang bisa diklik */}
+          <label
+            htmlFor="file-pdf"
+            className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer transition-all duration-200 hover:border-teal-500 hover:bg-gray-50"
+            onDragOver={handleDragOverPdf}
+            onDragLeave={handleDragLeavePdf}
+            onDrop={handleDropPdf}
+          >
             <div className="space-y-1 text-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
               </svg>
-               <div className="flex text-sm text-gray-600 justify-center">
-                 <p>Upload a file or drag and drop</p>
-               </div>
-               <label htmlFor="file-pdf" className="relative cursor-pointer bg-gray-200 hover:bg-gray-300 px-4 py-1 rounded-md font-medium text-gray-700 text-sm">
-                  <span>Choose File</span>
-                  <input id="file-pdf" name="file-pdf" type="file" className="sr-only" onChange={(e) => setFilePdf(e.target.files[0])} accept=".pdf" />
-                </label>
+              <div className="flex text-sm text-gray-600 justify-center">
+                <p>Upload a file or drag and drop</p>
+              </div>
+              <p className="text-xs text-gray-500">Hanya file PDF</p>
             </div>
-          </div>
-          {filePdf && <FilePreview file={filePdf} onClear={() => setFilePdf(null)} />}
+          </label>
+          <input
+            id="file-pdf"
+            name="file-pdf"
+            type="file"
+            ref={pdfInputRef} // Menghubungkan ref
+            className="sr-only"
+            onChange={(e) => handlePdfChange(e.target.files[0])}
+            accept=".pdf"
+            required
+          />
+          {filePdfPreview && <FilePreview file={filePdfPreview} onClear={() => handlePdfChange(null)} />}
         </div>
 
-        {/* Other Fields */}
+        {/* Penerbit */}
         <div>
-          <label htmlFor="penerbit" className="block text-sm font-medium text-gray-700 mb-1">Penerbit</label>
-          <input type="text" id="penerbit" value={penerbit} onChange={(e) => setPenerbit(e.target.value)} placeholder="Ketikkan Penerbit" className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm" />
+          <label htmlFor="penerbit" className="block text-sm font-medium text-gray-700 mb-1">
+            Penerbit
+          </label>
+          <input
+            type="text"
+            id="penerbit"
+            value={penerbit}
+            onChange={(e) => setPenerbit(e.target.value)}
+            placeholder="Ketikkan Penerbit"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+          />
         </div>
+
+        {/* ISBN */}
         <div>
-          <label htmlFor="isbn" className="block text-sm font-medium text-gray-700 mb-1">Judul ISBN</label>
-          <input type="text" id="isbn" value={isbn} onChange={(e) => setIsbn(e.target.value)} placeholder="Ketikkan Judul ISBN" className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm" />
+          <label htmlFor="isbn" className="block text-sm font-medium text-gray-700 mb-1">
+            Judul ISBN
+          </label>
+          <input
+            type="text"
+            id="isbn"
+            value={isbn}
+            onChange={(e) => setIsbn(e.target.value)}
+            placeholder="Ketikkan Judul ISBN"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+          />
         </div>
+
+        {/* Edisi */}
         <div>
-          <label htmlFor="edisi" className="block text-sm font-medium text-gray-700 mb-1">Edisi</label>
-          <input type="text" id="edisi" value={edisi} onChange={(e) => setEdisi(e.target.value)} placeholder="Ketikkan Edisi Buku" className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm" />
+          <label htmlFor="edisi" className="block text-sm font-medium text-gray-700 mb-1">
+            Edisi
+          </label>
+          <input
+            type="text"
+            id="edisi"
+            value={edisi}
+            onChange={(e) => setEdisi(e.target.value)}
+            placeholder="Ketikkan Edisi Buku"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+          />
         </div>
+
+        {/* Penulis */}
         <div>
-          <label htmlFor="penulis" className="block text-sm font-medium text-gray-700 mb-1">Penulis</label>
-          <input type="text" id="penulis" value={penulis} onChange={(e) => setPenulis(e.target.value)} placeholder="Ketikkan Penulis Buku" className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm" required />
+          <label htmlFor="penulis" className="block text-sm font-medium text-gray-700 mb-1">
+            Penulis <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="penulis"
+            value={penulis}
+            onChange={(e) => setPenulis(e.target.value)}
+            placeholder="Ketikkan Penulis Buku"
+            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
+            required
+          />
         </div>
 
         {/* Submit Button */}
         <div className="flex justify-end pt-2">
-          <button type="submit" className="inline-flex items-center py-2 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-            Kirim
+          <button
+            type="submit"
+            disabled={loading} // Disable tombol saat loading
+            className="inline-flex items-center py-2 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? "Mengunggah..." : "Kirim"}
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 5l7 7-7 7M5 12h14" />
             </svg>
           </button>
         </div>
-        
       </form>
+      <ToastContainer /> {/* Tambahkan ToastContainer di akhir komponen */}
     </div>
   );
 }
