@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import heroBeranda from "../assets/Beranda/Heroberanda.webp";
 import childImg from "../assets/Beranda/Child.webp";
 import donateIcon from "../assets/Beranda/donate.png";
@@ -33,19 +33,12 @@ export default function Beranda() {
 
 function HeroSec() {
   const navigate = useNavigate();
-  const { user } = useContext(UserContext); 
 
   let buttonText1 = "Donasi Sekarang";
   let buttonText2 = "Belajar Sekarang";
-  let targetPath = "/";
+  let targetPath = "/lihat-donasi";
   let targetPath2 = "/ummah-book";
 
-  if (user?.role === "donatur") {
-    targetPath = "/upload-donasi";
-  } else if (user?.role === "komunitas") {
-    targetPath = "/lihat-donasi";
-    buttonText1 = "Lihat Donasi";
-  }
 
   return (
     <section className="relative h-screen w-full bg-black">
