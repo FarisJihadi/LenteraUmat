@@ -30,10 +30,34 @@ exports.getOneMateri = async (req, res) => {
 };
 
 // Dapatkan semua materi dengan filter dan pencarian
+// exports.getAllMateri = async (req, res) => {
+//   try {
+//     const { kategori, judul } = req.query;
+
+//     const filter = {};
+
+//     // Filter berdasarkan kategori
+//     if (kategori && kategori !== "all") {
+//       filter.kategori = { $regex: new RegExp(kategori, "i") };
+//     }
+
+//     // Pencarian berdasarkan judulMateri
+//     if (judul) {
+//       filter.judulMateri = { $regex: new RegExp(judul, "i") };
+//     }
+
+//     // Mengurutkan berdasarkan waktu pembuatan terbaru
+//     const getAll = await EbookSchema.find(filter).sort({ createdAt: -1 });
+//     res.status(200).json(getAll);
+//   } catch (error) {
+//     console.error("Error saat mendapatkan semua materi:", error);
+//     res.status(500).json(error);
+//   }
+// };
+
 exports.getAllMateri = async (req, res) => {
   try {
-    const { kategori, judul } = req.query;
-
+    const { kategori, judul, statusMateri } = req.query; // <-- MENAMBAHKAN statusMateri di sini
     const filter = {};
 
     // Filter berdasarkan kategori
@@ -44,6 +68,11 @@ exports.getAllMateri = async (req, res) => {
     // Pencarian berdasarkan judulMateri
     if (judul) {
       filter.judulMateri = { $regex: new RegExp(judul, "i") };
+    }
+
+    // <-- MENAMBAHKAN FILTER BERDASARKAN STATUS MATERI
+    if (statusMateri) {
+      filter.statusMateri = statusMateri;
     }
 
     // Mengurutkan berdasarkan waktu pembuatan terbaru
