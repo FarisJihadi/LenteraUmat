@@ -21,11 +21,17 @@ export default function DonasiDisalurkan() {
       const dataGabungan = await Promise.all(
         donasiData.map(async (donasi) => {
           try {
-            const { data: detilDonasi } = await axiosInstance.get(`/donasi/detil/get/${donasi._id}`);
+            const { data: detilDonasi } = await axiosInstance.get(
+              `/donasi/detil/get/${donasi._id}`
+            );
             if (detilDonasi.namaStatus !== "disalurkan") return null;
 
-            const { data: pemilik } = await axiosInstance.get(`/user/get/${donasi.donasiUid}`);
-            const { data: detilPemilik } = await axiosInstance.get(`/detil/get/${donasi.donasiUid}`);
+            const { data: pemilik } = await axiosInstance.get(
+              `/user/get/${donasi.donasiUid}`
+            );
+            const { data: detilPemilik } = await axiosInstance.get(
+              `/detil/get/${donasi.donasiUid}`
+            );
 
             return {
               id: donasi._id,
@@ -73,7 +79,10 @@ export default function DonasiDisalurkan() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 md:px-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6">
         <h2 className="text-xl sm:text-2xl font-bold">Donasi Disalurkan</h2>
-        <Link to="/lihat-semua-donasi?status=disalurkan" className="text-blue-600 text-sm sm:text-base hover:underline">
+        <Link
+          to="/lihat-semua-donasi?status=disalurkan"
+          className="text-[#F79319] text-sm sm:text-base hover:underline"
+        >
           Lihat semua
         </Link>
       </div>
@@ -92,7 +101,10 @@ export default function DonasiDisalurkan() {
       <div className="flex flex-wrap gap-4 sm:gap-6 justify-center">
         {semuaData.length > 0 ? (
           semuaData.slice(0, 3).map((item) => (
-            <div key={item.id} className="w-full sm:w-[48%] md:w-[31%] flex justify-center">
+            <div
+              key={item.id}
+              className="w-full sm:w-[48%] md:w-[31%] flex justify-center"
+            >
               <CardDonasi
                 id={item.id}
                 title={item.title}

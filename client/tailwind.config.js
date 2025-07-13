@@ -6,12 +6,12 @@ export default {
       colors: {
         primary: {
           700: "#143752",
-          DEFAULT: "#205781",
-          dark: "#0B1E2C",
+          DEFAULT: "#F79319",
+          dark: "#07A5A8",
           light: "#2c7bb7",
         },
         grey: {
-          500: "#C4C4C4",
+          500: "#ffffff",
         },
       },
       screens: {

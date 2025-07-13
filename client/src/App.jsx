@@ -1,6 +1,7 @@
 import { React, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { UserContextProvider } from "./context/UserContext";
+
 import Beranda from "./pages/Beranda";
 import Daftar from "./pages/Daftar";
 import Masuk from "./pages/Masuk";
@@ -21,21 +22,23 @@ import Footer from "./components/Footer/Footer";
 import ProtectedRoute from "./components/Protected/ProtectedRoute";
 import ViewProfil from "./pages/ViewProfil";
 import NotFound from "./pages/NotFound";
+import UmmahBook from "./pages/UmmahBook";
+import BookDetail from "./pages/BookDetail";
+import UmmahPartner from "./pages/UmmahPartner";
+import BukuSaya from "./pages/BukuSaya";
+import FloatingMaskot from "./components/FloatingMaskot/FloatingMaskot";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-
   return null;
 }
 
 function NavbarWrapper() {
   const location = useLocation();
   const [scrolling, setScrolling] = useState(false);
-
   useEffect(() => {
     function handleScroll() {
       if (window.scrollY > 1) {
@@ -44,13 +47,11 @@ function NavbarWrapper() {
         setScrolling(false);
       }
     }
-
     if (location.pathname === "/" || location.pathname === "/lihat-donasi") {
       window.addEventListener("scroll", handleScroll);
     } else {
       setScrolling(false);
     }
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -59,80 +60,95 @@ function NavbarWrapper() {
   if (location.pathname === "/" || location.pathname === "/lihat-donasi") {
     return scrolling ? <Navbar /> : <Navbar2 />;
   }
-
   return <Navbar />;
 }
 
 function App() {
+  const location = useLocation();
+  const hideMaskotOnPaths = ["/daftar", "/masuk"];
+  const shouldHideMaskot = hideMaskotOnPaths.includes(location.pathname);
   return (
     <>
-      <UserContextProvider>
-        <BrowserRouter>
-          <NavbarWrapper />
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Beranda />} />
-            <Route path="/daftar" element={<Daftar />} />
-            <Route path="/masuk" element={<Masuk />} />
-            <Route path="/artikel" element={<Artikel />} />
-            <Route path="/upload-donasi" element={<UploadDonasi />} />
-
-            {/* Protected untuk komunitas */}
-            <Route
-              path="/permohonan-saya"
-              element={
-                <ProtectedRoute allowedRoles={["komunitas"]}>
-                  <PermohonanSaya />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route
-              path="/artikel-saya"
-              element={
-                <ProtectedRoute allowedRoles={["komunitas"]}>
-                  <ArtikelSaya />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* Protected untuk donatur */}
-
-            <Route
-              path="/donasi-saya"
-              element={
-                <ProtectedRoute allowedRoles={["donatur"]}>
-                  <DonasiSaya />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/donasi-saya/detail-donasi/:id"
-              element={
-                <ProtectedRoute allowedRoles={["donatur"]}>
-                  <DetailDonasiSaya />
-                </ProtectedRoute>
-              }
-            />
-
-            {/* Rute lain tetap seperti semula */}
-            <Route path="/lihat-donasi" element={<LihatDonasi />} />
-            <Route path="/lihat-semua-donasi" element={<ListDonasiLengkap />} />
-            <Route path="/lihat-donasi/donasi-kategori/detail-barang/:id" element={<DetailBarang />} />
-            <Route path="/lihat-donasi/donasi-semua/detail-barang/:id" element={<DetailBarang />} />
-            <Route path="/lihat-donasi/donasi-tersedia/detail-barang/:id" element={<DetailBarang />} />
-            <Route path="/lihat-donasi/donasi-disalurkan/detail-barang/:id" element={<DetailBarang />} />
-            <Route path="/artikel/detail-artikel/:id" element={<DetailArtikel />} />
-            <Route path="/view-profil/:id" element={<ViewProfil />} />
-            <Route path="/edit-profil" element={<EdiProfil />} />
-
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <Footer />
-        </BrowserRouter>
-      </UserContextProvider>
+      <NavbarWrapper />
+      <ScrollToTop />
+      {!shouldHideMaskot && <FloatingMaskot />}
+      <Routes>
+        <Route path="/" element={<Beranda />} />
+        <Route path="/ummah-book" element={<UmmahBook />} />
+        <Route path="/ummah-partner" element={<UmmahPartner />} />
+        <Route path="/daftar" element={<Daftar />} />
+        <Route path="/masuk" element={<Masuk />} />
+        <Route path="/artikel" element={<Artikel />} />
+        <Route path="/upload-donasi" element={<UploadDonasi />} />
+        <Route
+          path="/permohonan-saya"
+          element={
+            <ProtectedRoute allowedRoles={["komunitas"]}>
+              <PermohonanSaya />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/artikel-saya"
+          element={
+            <ProtectedRoute allowedRoles={["komunitas"]}>
+              <ArtikelSaya />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/donasi-saya"
+          element={
+            <ProtectedRoute allowedRoles={["donatur"]}>
+              <DonasiSaya />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/donasi-saya/detail-donasi/:id"
+          element={
+            <ProtectedRoute allowedRoles={["donatur"]}>
+              <DetailDonasiSaya />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/lihat-donasi" element={<LihatDonasi />} />
+        <Route path="/lihat-semua-donasi" element={<ListDonasiLengkap />} />
+        <Route
+          path="/lihat-donasi/donasi-kategori/detail-barang/:id"
+          element={<DetailBarang />}
+        />
+        <Route
+          path="/lihat-donasi/donasi-semua/detail-barang/:id"
+          element={<DetailBarang />}
+        />
+        <Route
+          path="/lihat-donasi/donasi-tersedia/detail-barang/:id"
+          element={<DetailBarang />}
+        />
+        <Route
+          path="/lihat-donasi/donasi-disalurkan/detail-barang/:id"
+          element={<DetailBarang />}
+        />
+        <Route path="/buku-saya" element={<BukuSaya />} />
+        <Route path="/artikel/detail-artikel/:id" element={<DetailArtikel />} />
+        <Route path="/view-profil/:id" element={<ViewProfil />} />
+        <Route path="/edit-profil" element={<EdiProfil />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <Footer />
     </>
   );
 }
 
-export default App;
+function AppWrapper() {
+  return (
+    <UserContextProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </UserContextProvider>
+  );
+}
+
+export default AppWrapper;
