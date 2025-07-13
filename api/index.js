@@ -13,6 +13,8 @@ const userRoutes = require("./src/routers/user");
 const donasiRoutes = require("./src/routers/donasi");
 const detilDonasiRoutes = require("./src/routers/detilDonasi");
 const artikelRoutes = require("./src/routers/artikel");
+const materiRoutes = require("./src/routers/ebook");
+const chatRoutes = require("./src/routers/chat");
 // const apiKeyMiddleware = require("./src/middleware/apiKeyMiddleware");
 
 dotenv.config();
@@ -36,10 +38,12 @@ app.use("/user", userRoutes);
 app.use("/donasi", donasiRoutes);
 app.use("/donasi/detil", detilDonasiRoutes);
 app.use("/artikel", artikelRoutes);
+app.use("/materi", materiRoutes);
+app.use("/chat", chatRoutes);
 
 // get test api
 app.get("/", (req, res) => {
-  res.send("Hallo dari Setarain " + req.path);
+  res.send("Hallo dari Lentera Umat " + req.path);
 });
 
 // connect to database MongoDB

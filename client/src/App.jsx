@@ -21,6 +21,8 @@ import Footer from "./components/Footer/Footer";
 import ProtectedRoute from "./components/Protected/ProtectedRoute";
 import ViewProfil from "./pages/ViewProfil";
 import NotFound from "./pages/NotFound";
+import UmmahBook from "./pages/UmmahBook";
+import UmmahPartner from "./pages/UmmahPatner";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -74,6 +76,8 @@ function App() {
             <Route path="/" element={<Beranda />} />
             <Route path="/daftar" element={<Daftar />} />
             <Route path="/masuk" element={<Masuk />} />
+            <Route path="/ummah-book" element={<UmmahBook />} />
+            <Route path="/ummah-patner" element={<UmmahPartner />} />
             <Route path="/artikel" element={<Artikel />} />
             <Route path="/upload-donasi" element={<UploadDonasi />} />
 
