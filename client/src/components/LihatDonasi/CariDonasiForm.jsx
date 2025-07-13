@@ -198,7 +198,7 @@ function HeroSection() {
         src={heroImage2}
         alt="Hero background"
       />
-      <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-60"></div>
       <div className="relative z-10 text-center px-4 sm:px-0">
         <h1 className="text-4xl sm:text-heading-xl text-white font-extrabold mb-4 sm:mb-6 leading-snug">
           Donasi Pendidikan

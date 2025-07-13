@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-// A helper component for the file inputs to show the selected file's name
 const FilePreview = ({ file, onClear }) => (
   <div className="mt-2 text-sm text-center">
     <p className="font-semibold truncate">{file.name}</p>
@@ -11,7 +10,6 @@ const FilePreview = ({ file, onClear }) => (
 );
 
 function UploadBookForm({ onUpload }) {
-  // Updated state to match the new form fields
   const [judul, setJudul] = useState('');
   const [sampul, setSampul] = useState(null);
   const [filePdf, setFilePdf] = useState(null);

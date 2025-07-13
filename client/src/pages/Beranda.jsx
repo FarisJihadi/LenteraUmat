@@ -14,6 +14,8 @@ import { axiosInstance } from "../config";
 import CardArtikel from "../components/Artikel/CardArtikel";
 import { CardSkleton } from "../components/LihatDonasi/CardSkleton";
 import { UserContext } from "../context/UserContext";
+import aiFeatureScreenshot from "../assets/Beranda/lumagif.gif";
+
 
 export default function Beranda() {
   return (
@@ -31,60 +33,94 @@ export default function Beranda() {
 
 function HeroSec() {
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user } = useContext(UserContext); 
 
-  let buttonText = "Donasi Sekarang";
-  let targetPath = "/daftar";
+  let buttonText1 = "Donasi Sekarang";
+  let buttonText2 = "Belajar Sekarang";
+  let targetPath = "/";
+  let targetPath2 = "/ummah-book";
 
   if (user?.role === "donatur") {
     targetPath = "/upload-donasi";
   } else if (user?.role === "komunitas") {
     targetPath = "/lihat-donasi";
-    buttonText = "Bergerak Sekarang";
+    buttonText1 = "Lihat Donasi";
   }
+
   return (
-    <>
-      <section className="relative md:h-screen sm:h-screen h-[60vh] w-full">
-        {/* Background Image */}
-        <img
-          src={heroBeranda}
-          alt="Children learning"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+    <section className="relative h-screen w-full bg-black">
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-30" />
+      <img src={heroBeranda} alt="Children learning" className="absolute inset-0 w-full h-full object-cover opacity-50" />
+      <div className="absolute inset-0 bg-black bg-opacity-30" />
+      <div className="relative z-10 flex justify-between items-center h-full px-10 md:px-16 lg:px-36 text-white">
 
-        {/* Content */}
-        <div className="relative z-10 flex flex-col gap-4 justify-center h-full px-10 md:px-16 lg:px-36 text-white">
+        <div className="max-w-xl">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mt-16 font-extrabold leading-tight">
             Ayo Jadi Pahlawan <br className="hidden sm:block" /> Pendidikan!
           </h1>
           <p className="mt-4 text-base sm:text-lg md:text-md max-w-sm">
-            Satu Kontribusi anda bisa membuka akses belajar bagi anak bangsa.
+            Satu kontribusi Anda bisa membuka akses belajar bagi anak bangsa.
           </p>
-          <button
-            onClick={() => navigate(targetPath)}
-            className="mt-6 w-fit inline-flex gap-2 items-center bg-primary hover:bg-[#DC7900] text-white font-medium px-5 py-3 rounded-full transition duration-300"
-          >
-            <p>{buttonText}</p>
-            <svg
-              width="25"
-              height="24"
-              viewBox="0 0 25 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+
+          <div className="flex flex-wrap gap-4 mt-6">
+            <button
+              onClick={() => navigate(targetPath)}
+              className="inline-flex gap-2 items-center bg-primary hover:bg-[#DC7900] text-white font-medium px-5 py-3 rounded-full transition duration-300"
             >
-              <rect width="24.4" height="24" rx="12" fill="#F6F8D5" />
-              <path
-                d="M15.0727 12.9818H6.96364C6.69697 12.9818 6.4697 12.8879 6.28182 12.7C6.09394 12.5121 6 12.2848 6 12.0182C6 11.7515 6.09394 11.5242 6.28182 11.3364C6.4697 11.1485 6.69697 11.0545 6.96364 11.0545H15.0727L11.6909 7.67273C11.497 7.47879 11.4 7.24848 11.4 6.98182C11.4 6.71515 11.497 6.48485 11.6909 6.29091C11.8848 6.09697 12.1152 6 12.3818 6C12.6485 6 12.8788 6.09697 13.0727 6.29091L18.1273 11.3455C18.2242 11.4424 18.2939 11.5455 18.3364 11.6545C18.3788 11.7636 18.4 11.8848 18.4 12.0182C18.4 12.1515 18.3788 12.2727 18.3364 12.3818C18.2939 12.4909 18.2242 12.5939 18.1273 12.6909L13.1091 17.7091C12.9152 17.903 12.6848 18 12.4182 18C12.1515 18 11.9212 17.903 11.7273 17.7091C11.5333 17.5152 11.4364 17.2848 11.4364 17.0182C11.4364 16.7515 11.5333 16.5212 11.7273 16.3273L15.0727 12.9818Z"
-                fill="#205781"
-              />
-            </svg>
-          </button>
+              <p>{buttonText1}</p>
+               <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+              <rect width="24.4" height="24" rx="12" fill="#F6F8D5" />
+
+              <path
+
+                d="M15.0727 12.9818H6.96364C6.69697 12.9818 6.4697 12.8879 6.28182 12.7C6.09394 12.5121 6 12.2848 6 12.0182C6 11.7515 6.09394 11.5242 6.28182 11.3364C6.4697 11.1485 6.69697 11.0545 6.96364 11.0545H15.0727L11.6909 7.67273C11.497 7.47879 11.4 7.24848 11.4 6.98182C11.4 6.71515 11.497 6.48485 11.6909 6.29091C11.8848 6.09697 12.1152 6 12.3818 6C12.6485 6 12.8788 6.09697 13.0727 6.29091L18.1273 11.3455C18.2242 11.4424 18.2939 11.5455 18.3364 11.6545C18.3788 11.7636 18.4 11.8848 18.4 12.0182C18.4 12.1515 18.3788 12.2727 18.3364 12.3818C18.2939 12.4909 18.2242 12.5939 18.1273 12.6909L13.1091 17.7091C12.9152 17.903 12.6848 18 12.4182 18C12.1515 18 11.9212 17.903 11.7273 17.7091C11.5333 17.5152 11.4364 17.2848 11.4364 17.0182C11.4364 16.7515 11.5333 16.5212 11.7273 16.3273L15.0727 12.9818Z"
+
+                fill="#205781"
+
+              />
+
+            </svg>
+            </button>
+            <button
+              onClick={() => navigate(targetPath2)}
+              className="inline-flex gap-2 items-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium px-5 py-3 rounded-full transition duration-300"
+            >
+              <p>{buttonText2}</p>
+             <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+              <rect width="24.4" height="24" rx="12" fill="#F6F8D5" />
+
+              <path
+
+                d="M15.0727 12.9818H6.96364C6.69697 12.9818 6.4697 12.8879 6.28182 12.7C6.09394 12.5121 6 12.2848 6 12.0182C6 11.7515 6.09394 11.5242 6.28182 11.3364C6.4697 11.1485 6.69697 11.0545 6.96364 11.0545H15.0727L11.6909 7.67273C11.497 7.47879 11.4 7.24848 11.4 6.98182C11.4 6.71515 11.497 6.48485 11.6909 6.29091C11.8848 6.09697 12.1152 6 12.3818 6C12.6485 6 12.8788 6.09697 13.0727 6.29091L18.1273 11.3455C18.2242 11.4424 18.2939 11.5455 18.3364 11.6545C18.3788 11.7636 18.4 11.8848 18.4 12.0182C18.4 12.1515 18.3788 12.2727 18.3364 12.3818C18.2939 12.4909 18.2242 12.5939 18.1273 12.6909L13.1091 17.7091C12.9152 17.903 12.6848 18 12.4182 18C12.1515 18 11.9212 17.903 11.7273 17.7091C11.5333 17.5152 11.4364 17.2848 11.4364 17.0182C11.4364 16.7515 11.5333 16.5212 11.7273 16.3273L15.0727 12.9818Z"
+
+                fill="#205781"
+
+              />
+
+            </svg>
+            </button>
+          </div>
         </div>
-      </section>
-    </>
+
+        <div 
+          className="hidden lg:block [perspective:1000px] cursor-pointer"
+          onClick={() => navigate('/ummah-partner')} 
+        >
+          <div className="transition-transform duration-500 ease-in-out hover:scale-105 hover:[transform:rotateY(-10deg)] [transform:rotateY(-15deg)]">
+            <img 
+              src={aiFeatureScreenshot} 
+              alt="AI Feature Screenshot" 
+              className="w-[800px] h-auto rounded-xl shadow-2xl transition-all duration-500 hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.5)]" 
+            />
+          </div>
+          <p className="mt-4 text-center text-sm font-medium text-gray-200">
+            Coba <span className="font-bold">Luma AI</span> sekarang juga!
+          </p>
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -270,17 +306,24 @@ function TargetSec() {
   return (
     <section className="bg-[#07A5A8] text-white py-16 px-6 md:px-20">
       <h2 className="text-3xl font-semibold text-center mb-12">Target Kami</h2>
-      <div className="flex flex-col md:flex-row justify-center gap-8 md:gap-20">
-        <div className="bg-white text-[#205D88] rounded-xl shadow-md p-10 md:p-16 text-center w-full md:w-1/3">
-          <p className="text-2xl font-bold">22.500+ Barang</p>
+      <div className="flex flex-col md:flex-row justify-center items-stretch gap-8">
+        <div className="bg-white text-[#205D88] rounded-xl shadow-md p-10 text-center w-full md:w-1/3 flex flex-col justify-center">
+          <p className="text-2xl font-bold">500+ Materi</p>
           <p className="mt-2">
-            Donasi alat pendidikan yang mengubah akses belajar.
+            Materi pembelajaran berkualitas yang mudah diakses oleh semua.
           </p>
         </div>
-        <div className="bg-white text-[#205D88] rounded-xl shadow-md p-10 md:p-16 text-center w-full md:w-1/3">
-          <p className="text-2xl font-bold">1500+ Komunitas</p>
+        <div className="bg-white text-[#205D88] rounded-xl shadow-md p-10 text-center w-full md:w-1/3 flex flex-col justify-center">
+          <p className="text-2xl font-bold">1000+ Partner</p>
           <p className="mt-2">
-            Mitra komunitas yang percaya pada transparansi Setarain.
+            Menjalin kerjasama strategis dengan lembaga dan komunitas pendidikan.
+          </p>
+        </div>
+
+        <div className="bg-white text-[#205D88] rounded-xl shadow-md p-10 text-center w-full md:w-1/3 flex flex-col justify-center">
+          <p className="text-2xl font-bold">22.500+ Barang</p>
+          <p className="mt-2">
+            Donasi alat pendidikan yang mengubah akses dan kualitas belajar.
           </p>
         </div>
       </div>

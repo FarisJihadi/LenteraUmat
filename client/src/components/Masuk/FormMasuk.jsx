@@ -21,7 +21,6 @@ export default function FormMasuk() {
       const res = await axiosInstance.post("/auth/login", { username, password }, { withCredentials: true });
 
       setUser(res.data);
-
       setLoading(false);
       navigate("/");
     } catch (error) {
@@ -38,26 +37,41 @@ export default function FormMasuk() {
 
   return (
     <>
-      <div className="login-container mx-auto max-w-[500px] w-fit md:mt-8 mt-16 mb-16 px-8">
-        <HeaderMasuk />
-        <form onSubmit={handleMasuk} className="flex flex-col gap-5">
-          <InputField label="Username" id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
-          <InputField label="Password" type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Ketik Password" />
-          <SubmitButton loading={loading}>Masuk</SubmitButton>
-        </form>
-        <div className="flex justify-center mt-5">
-          <p>
-            Belum punya akun?
-            <Link to="/daftar" className="underline text-primary font-bold">
-              {" "}
-              Daftar sekarang
-            </Link>
-          </p>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#fefcea] via-[#f1f1f1] to-[#e0f7fa] px-4">
+        <div className="bg-white shadow-md rounded-xl w-full max-w-[500px] p-8">
+          <HeaderMasuk />
+          <form onSubmit={handleMasuk} className="flex flex-col gap-5">
+            <InputField
+              label="Username"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Username"
+            />
+            <InputField
+              label="Password"
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Ketik Password"
+            />
+            <SubmitButton loading={loading}>Masuk</SubmitButton>
+          </form>
+          <div className="flex justify-center mt-5">
+            <p>
+              Belum punya akun?
+              <Link to="/daftar" className="underline text-primary font-bold ml-1">
+                Daftar sekarang
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </>
   );
 }
+
 
 function HeaderMasuk() {
   return (

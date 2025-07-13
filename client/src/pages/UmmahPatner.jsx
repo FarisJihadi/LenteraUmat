@@ -60,7 +60,8 @@ export default function UmmahPartner() {
   const [quizQuestions, setQuizQuestions] = useState([]);
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
     }
   }, [chatHistory]);
 
@@ -73,7 +74,11 @@ export default function UmmahPartner() {
         setFilteredDatabaseMateris(res.data);
       } catch (err) {
         console.error("Gagal memuat daftar materi:", err);
-        Swal.fire("Error", "Gagal memuat daftar materi. Silakan coba lagi.", "error");
+        Swal.fire(
+          "Error",
+          "Gagal memuat daftar materi. Silakan coba lagi.",
+          "error"
+        );
       }
     };
     fetchMateris();
@@ -82,12 +87,18 @@ export default function UmmahPartner() {
   // Filter materi database berdasarkan search query
   useEffect(() => {
     if (searchMateriQuery) {
-      const filtered = materis.filter((materi) => materi.judulMateri.toLowerCase().includes(searchMateriQuery.toLowerCase()));
+      const filtered = materis.filter((materi) =>
+        materi.judulMateri
+          .toLowerCase()
+          .includes(searchMateriQuery.toLowerCase())
+      );
       setFilteredDatabaseMateris(filtered);
     } else {
       setFilteredDatabaseMateris(materis);
     }
-    setShowSearchDropdown(searchMateriQuery.length > 0 && filteredDatabaseMateris.length > 0);
+    setShowSearchDropdown(
+      searchMateriQuery.length > 0 && filteredDatabaseMateris.length > 0
+    );
   }, [searchMateriQuery, materis]);
 
   // Ketika materi database dipilih atau file lokal diupload, proses PDF-nya
@@ -106,7 +117,10 @@ export default function UmmahPartner() {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target)) {
+      if (
+        searchDropdownRef.current &&
+        !searchDropdownRef.current.contains(event.target)
+      ) {
         setShowSearchDropdown(false);
       }
     };
@@ -131,7 +145,11 @@ export default function UmmahPartner() {
       setChatSessions(res.data);
     } catch (err) {
       console.error("Gagal memuat sesi chat:", err);
-      Swal.fire("Error", "Gagal memuat riwayat chat. Silakan coba lagi.", "error");
+      Swal.fire(
+        "Error",
+        "Gagal memuat riwayat chat. Silakan coba lagi.",
+        "error"
+      );
     } finally {
       setIsHistoryLoading(false);
     }
@@ -211,7 +229,11 @@ export default function UmmahPartner() {
           }
         } catch (err) {
           console.error("Gagal menghapus sesi chat:", err);
-          Swal.fire("Error", "Gagal menghapus sesi chat. Silakan coba lagi.", "error");
+          Swal.fire(
+            "Error",
+            "Gagal menghapus sesi chat. Silakan coba lagi.",
+            "error"
+          );
         }
       }
     });
@@ -243,7 +265,11 @@ export default function UmmahPartner() {
       }
     } catch (error) {
       console.error("Gagal menyimpan pesan ke backend:", error);
-      Swal.fire("Error", "Gagal menyimpan riwayat chat. Silakan coba lagi.", "error");
+      Swal.fire(
+        "Error",
+        "Gagal menyimpan riwayat chat. Silakan coba lagi.",
+        "error"
+      );
       return null;
     }
   };
@@ -287,7 +313,11 @@ export default function UmmahPartner() {
       setPdfTextContent(fullText);
     } catch (err) {
       console.error("Gagal memproses PDF:", err);
-      Swal.fire("Error", "Gagal mengekstrak teks dari PDF. Pastikan URL PDF valid atau file tidak rusak.", "error");
+      Swal.fire(
+        "Error",
+        "Gagal mengekstrak teks dari PDF. Pastikan URL PDF valid atau file tidak rusak.",
+        "error"
+      );
       setPdfTextContent("Gagal mengekstrak teks dari PDF.");
     } finally {
       setIsPdfProcessing(false);
@@ -327,11 +357,26 @@ export default function UmmahPartner() {
       const result = await response.json();
 
       if (!response.ok) {
-        console.error("API response not OK (status:", response.status, "):", result);
-        throw new Error(`API request failed with status ${response.status}: ${JSON.stringify(result)}`);
+        console.error(
+          "API response not OK (status:",
+          response.status,
+          "):",
+          result
+        );
+        throw new Error(
+          `API request failed with status ${response.status}: ${JSON.stringify(
+            result
+          )}`
+        );
       }
 
-      if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+      if (
+        result.candidates &&
+        result.candidates.length > 0 &&
+        result.candidates[0].content &&
+        result.candidates[0].content.parts &&
+        result.candidates[0].content.parts.length > 0
+      ) {
         const text = result.candidates[0].content.parts[0].text;
         return text;
       } else {
@@ -340,7 +385,11 @@ export default function UmmahPartner() {
       }
     } catch (error) {
       console.error("Error calling Gemini API:", error);
-      Swal.fire("Error", `Terjadi kesalahan saat berkomunikasi dengan AI: ${error.message}. Silakan coba lagi.`, "error");
+      Swal.fire(
+        "Error",
+        `Terjadi kesalahan saat berkomunikasi dengan AI: ${error.message}. Silakan coba lagi.`,
+        "error"
+      );
       return null;
     } finally {
       setIsLoading(false);
@@ -353,26 +402,40 @@ export default function UmmahPartner() {
     e.preventDefault();
     if (!inputMessage.trim()) return;
 
-    const userMessage = { role: "user", content: inputMessage, parts: [{ text: inputMessage }] };
+    const userMessage = {
+      role: "user",
+      content: inputMessage,
+      parts: [{ text: inputMessage }],
+    };
 
     // Siapkan riwayat percakapan untuk dikirim ke Gemini API.
     // Ini harus mencakup pesan pengguna yang baru saja dikirim.
     // Pastikan hanya mengirim 'parts' ke Gemini API
-    const conversationForGemini = [...chatHistory, userMessage].map((msg) => ({ role: msg.role, parts: msg.parts }));
+    const conversationForGemini = [...chatHistory, userMessage].map((msg) => ({
+      role: msg.role,
+      parts: msg.parts,
+    }));
 
     // Perbarui state chatHistory lokal terlebih dahulu untuk tampilan instan
     setChatHistory((prev) => [...prev, userMessage]);
     setInputMessage("");
 
     // Simpan pesan user ke backend dan dapatkan ID sesi yang aktif
-    const activeSessionId = await saveMessageToBackend(userMessage, currentChatSessionId);
+    const activeSessionId = await saveMessageToBackend(
+      userMessage,
+      currentChatSessionId
+    );
     if (!activeSessionId) return;
 
     // Panggil Gemini API dengan riwayat percakapan yang sudah disiapkan
     const modelResponseText = await callGeminiApi(conversationForGemini);
 
     if (modelResponseText) {
-      const modelMessage = { role: "model", content: modelResponseText, parts: [{ text: modelResponseText }] };
+      const modelMessage = {
+        role: "model",
+        content: modelResponseText,
+        parts: [{ text: modelResponseText }],
+      };
       setChatHistory((prev) => [...prev, modelMessage]);
       // Simpan pesan model ke backend dengan ID sesi yang sama
       await saveMessageToBackend(modelMessage, activeSessionId);
@@ -393,10 +456,17 @@ export default function UmmahPartner() {
     }
 
     const prompt = `Berdasarkan teks PDF berikut:\n\n${pdfTextContent}\n\nJawab pertanyaan ini: ${askPdfQuestion}`;
-    const materiTitle = pdfSourceType === "database" && selectedDatabaseMateriId ? materis.find((m) => m._id === selectedDatabaseMateriId)?.judulMateri : uploadedPdfFileName || "PDF Lokal";
+    const materiTitle =
+      pdfSourceType === "database" && selectedDatabaseMateriId
+        ? materis.find((m) => m._id === selectedDatabaseMateriId)?.judulMateri
+        : uploadedPdfFileName || "PDF Lokal";
 
     const userMessageContent = `[Tanya PDF] Materi: ${materiTitle}\nPertanyaan: ${askPdfQuestion}`;
-    const userMessage = { role: "user", content: userMessageContent, parts: [{ text: userMessageContent }] };
+    const userMessage = {
+      role: "user",
+      content: userMessageContent,
+      parts: [{ text: userMessageContent }],
+    };
 
     // Untuk fitur PDF, biasanya hanya prompt saat ini yang dikirim sebagai konteks ke Gemini
     // Karena Gemini 2.0-Flash cenderung lebih baik dengan konteks yang lebih ringkas untuk tugas spesifik
@@ -405,13 +475,20 @@ export default function UmmahPartner() {
     setChatHistory((prev) => [...prev, userMessage]);
     setAskPdfQuestion("");
 
-    const activeSessionId = await saveMessageToBackend(userMessage, currentChatSessionId);
+    const activeSessionId = await saveMessageToBackend(
+      userMessage,
+      currentChatSessionId
+    );
     if (!activeSessionId) return;
 
     const modelResponseText = await callGeminiApi(conversationForGemini);
 
     if (modelResponseText) {
-      const modelMessage = { role: "model", content: modelResponseText, parts: [{ text: modelResponseText }] };
+      const modelMessage = {
+        role: "model",
+        content: modelResponseText,
+        parts: [{ text: modelResponseText }],
+      };
       setChatHistory((prev) => [...prev, modelMessage]);
       await saveMessageToBackend(modelMessage, activeSessionId);
     }
@@ -424,22 +501,36 @@ export default function UmmahPartner() {
     }
 
     const prompt = `Ringkas teks PDF berikut dalam format poin-poin penting:\n\n${pdfTextContent}`;
-    const materiTitle = pdfSourceType === "database" && selectedDatabaseMateriId ? materis.find((m) => m._id === selectedDatabaseMateriId)?.judulMateri : uploadedPdfFileName || "PDF Lokal";
+    const materiTitle =
+      pdfSourceType === "database" && selectedDatabaseMateriId
+        ? materis.find((m) => m._id === selectedDatabaseMateriId)?.judulMateri
+        : uploadedPdfFileName || "PDF Lokal";
 
     const userMessageContent = `[Ringkas PDF] Materi: ${materiTitle}`;
-    const userMessage = { role: "user", content: userMessageContent, parts: [{ text: userMessageContent }] };
+    const userMessage = {
+      role: "user",
+      content: userMessageContent,
+      parts: [{ text: userMessageContent }],
+    };
 
     const conversationForGemini = [{ role: "user", parts: [{ text: prompt }] }];
 
     setChatHistory((prev) => [...prev, userMessage]);
 
-    const activeSessionId = await saveMessageToBackend(userMessage, currentChatSessionId);
+    const activeSessionId = await saveMessageToBackend(
+      userMessage,
+      currentChatSessionId
+    );
     if (!activeSessionId) return;
 
     const modelResponseText = await callGeminiApi(conversationForGemini);
 
     if (modelResponseText) {
-      const modelMessage = { role: "model", content: modelResponseText, parts: [{ text: modelResponseText }] };
+      const modelMessage = {
+        role: "model",
+        content: modelResponseText,
+        parts: [{ text: modelResponseText }],
+      };
       setChatHistory((prev) => [...prev, modelMessage]);
       await saveMessageToBackend(modelMessage, activeSessionId);
     }
@@ -484,16 +575,26 @@ export default function UmmahPartner() {
       delete quizSchema.items.properties.options;
     }
 
-    const materiTitle = pdfSourceType === "database" && selectedDatabaseMateriId ? materis.find((m) => m._id === selectedDatabaseMateriId)?.judulMateri : uploadedPdfFileName || "PDF Lokal";
+    const materiTitle =
+      pdfSourceType === "database" && selectedDatabaseMateriId
+        ? materis.find((m) => m._id === selectedDatabaseMateriId)?.judulMateri
+        : uploadedPdfFileName || "PDF Lokal";
 
     const userMessageContent = `[Generate Kuis] Materi: ${materiTitle}, Tipe: ${quizType}, Jumlah: ${numQuestions}`;
-    const userMessage = { role: "user", content: userMessageContent, parts: [{ text: userMessageContent }] };
+    const userMessage = {
+      role: "user",
+      content: userMessageContent,
+      parts: [{ text: userMessageContent }],
+    };
 
     const conversationForGemini = [{ role: "user", parts: [{ text: prompt }] }];
 
     setChatHistory((prev) => [...prev, userMessage]);
 
-    const activeSessionId = await saveMessageToBackend(userMessage, currentChatSessionId);
+    const activeSessionId = await saveMessageToBackend(
+      userMessage,
+      currentChatSessionId
+    );
     if (!activeSessionId) return;
 
     const jsonResponse = await callGeminiApi(conversationForGemini, quizSchema);
@@ -503,14 +604,27 @@ export default function UmmahPartner() {
         const parsedQuiz = JSON.parse(jsonResponse);
         setQuizQuestions(parsedQuiz);
         const modelMessageContent = "Kuis berhasil dibuat!";
-        const modelMessage = { role: "model", content: modelMessageContent, parts: [{ text: modelMessageContent }] };
+        const modelMessage = {
+          role: "model",
+          content: modelMessageContent,
+          parts: [{ text: modelMessageContent }],
+        };
         setChatHistory((prev) => [...prev, modelMessage]);
         await saveMessageToBackend(modelMessage, activeSessionId);
       } catch (e) {
         console.error("Gagal memparsing respon kuis:", e);
-        Swal.fire("Error", "Gagal membuat kuis. Respon AI tidak valid.", "error");
-        const errorMessageContent = "Maaf, gagal membuat kuis. Silakan coba lagi.";
-        const errorMessage = { role: "model", content: errorMessageContent, parts: [{ text: errorMessageContent }] };
+        Swal.fire(
+          "Error",
+          "Gagal membuat kuis. Respon AI tidak valid.",
+          "error"
+        );
+        const errorMessageContent =
+          "Maaf, gagal membuat kuis. Silakan coba lagi.";
+        const errorMessage = {
+          role: "model",
+          content: errorMessageContent,
+          parts: [{ text: errorMessageContent }],
+        };
         setChatHistory((prev) => [...prev, errorMessage]);
         await saveMessageToBackend(errorMessage, activeSessionId);
       }
@@ -565,22 +679,39 @@ export default function UmmahPartner() {
     const maxTextWidth = pageWidth - 2 * margin;
 
     doc.setFontSize(18);
-    doc.text("Kuis UmmahPartner AI", margin, yPos);
+    doc.text("Kuis Ummah Partner AI", margin, yPos);
     yPos += 10;
     doc.setFontSize(12);
-    const materiTitle = pdfSourceType === "database" && selectedDatabaseMateriId ? materis.find((m) => m._id === selectedDatabaseMateriId)?.judulMateri : uploadedPdfFileName || "PDF Lokal";
+    const materiTitle =
+      pdfSourceType === "database" && selectedDatabaseMateriId
+        ? materis.find((m) => m._id === selectedDatabaseMateriId)?.judulMateri
+        : uploadedPdfFileName || "PDF Lokal";
     doc.text(`Materi: ${materiTitle}`, margin, yPos);
     yPos += 10;
-    doc.text(`Tipe Kuis: ${quizType === "multipleChoice" ? "Pilihan Ganda" : "Isian Singkat"}`, margin, yPos);
+    doc.text(
+      `Tipe Kuis: ${
+        quizType === "multipleChoice" ? "Pilihan Ganda" : "Isian Singkat"
+      }`,
+      margin,
+      yPos
+    );
     yPos += 15;
 
     quizQuestions.forEach((q, index) => {
       doc.setFontSize(12);
       const questionNumberText = `${index + 1}. `;
 
-      const questionLines = doc.splitTextToSize(q.question, maxTextWidth - doc.getTextWidth(questionNumberText));
+      const questionLines = doc.splitTextToSize(
+        q.question,
+        maxTextWidth - doc.getTextWidth(questionNumberText)
+      );
 
-      const estimatedHeightNeeded = questionLines.length * lineHeight + (q.type === "multipleChoice" ? q.options.length * lineHeight : lineHeight) + lineHeight * 3;
+      const estimatedHeightNeeded =
+        questionLines.length * lineHeight +
+        (q.type === "multipleChoice"
+          ? q.options.length * lineHeight
+          : lineHeight) +
+        lineHeight * 3;
 
       if (yPos + estimatedHeightNeeded > pageHeight - margin) {
         doc.addPage();
@@ -588,14 +719,21 @@ export default function UmmahPartner() {
       }
 
       doc.text(questionNumberText, margin, yPos);
-      doc.text(questionLines, margin + doc.getTextWidth(questionNumberText), yPos);
+      doc.text(
+        questionLines,
+        margin + doc.getTextWidth(questionNumberText),
+        yPos
+      );
       yPos += questionLines.length * lineHeight;
 
       if (q.type === "multipleChoice" && q.options) {
         const alphabet = ["A", "B", "C", "D"];
         q.options.forEach((option, optIndex) => {
           const optionPrefix = `   ${alphabet[optIndex]}. `;
-          const optionLines = doc.splitTextToSize(option, maxTextWidth - doc.getTextWidth(optionPrefix));
+          const optionLines = doc.splitTextToSize(
+            option,
+            maxTextWidth - doc.getTextWidth(optionPrefix)
+          );
           doc.text(optionPrefix, margin, yPos);
           doc.text(optionLines, margin + doc.getTextWidth(optionPrefix), yPos);
           yPos += optionLines.length * lineHeight;
@@ -608,7 +746,10 @@ export default function UmmahPartner() {
       doc.setFontSize(10);
       doc.setTextColor(0, 128, 0);
       const answerPrefix = "Jawaban: ";
-      const answerLines = doc.splitTextToSize(q.answer, maxTextWidth - doc.getTextWidth(answerPrefix));
+      const answerLines = doc.splitTextToSize(
+        q.answer,
+        maxTextWidth - doc.getTextWidth(answerPrefix)
+      );
       doc.text(answerPrefix, margin, yPos);
       doc.text(answerLines, margin + doc.getTextWidth(answerPrefix), yPos);
       doc.setTextColor(0, 0, 0);
@@ -627,18 +768,28 @@ export default function UmmahPartner() {
 
     let formattedText = text;
 
-    formattedText = formattedText.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+    formattedText = formattedText.replace(
+      /\*\*(.*?)\*\*/g,
+      "<strong>$1</strong>"
+    );
     formattedText = formattedText.replace(/\*(.*?)\*/g, "<em>$1</em>");
     formattedText = formattedText.replace(/(?<!\n)\n(?!\n)/g, "<br />");
     formattedText = formattedText.replace(/^[*-]\s*(.*)$/gm, "<li>$1</li>");
-    formattedText = formattedText.replace(/^\*\s*([A-Za-z\s]+:)/gm, "<p><strong>$1</strong></p>");
+    formattedText = formattedText.replace(
+      /^\*\s*([A-Za-z\s]+:)/gm,
+      "<p><strong>$1</strong></p>"
+    );
 
     formattedText = formattedText.replace(/(<li>.*?<\/li>)+/gs, "<ul>$&</ul>");
 
     formattedText = formattedText
       .split("\n\n")
       .map((block) => {
-        if (block.startsWith("<ul>") || block.startsWith("<p>") || block.trim() === "") {
+        if (
+          block.startsWith("<ul>") ||
+          block.startsWith("<p>") ||
+          block.trim() === ""
+        ) {
           return block;
         }
         return `<p>${block}</p>`;
@@ -653,17 +804,21 @@ export default function UmmahPartner() {
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-100 font-inter">
+    <div className="flex flex-col md:flex-row h-[calc(100vh-8rem)] bg-gray-100 font-inter">
       {/* Panel Kiri: Kontrol Fitur */}
       <div className="w-full md:w-1/3 lg:w-1/4 bg-white p-6 shadow-lg flex flex-col overflow-y-auto rounded-lg md:rounded-r-none">
-        <h2 className="text-2xl font-bold text-center text-primary mb-6">Ummah Partner </h2>
+        <h2 className="text-2xl font-bold text-center text-primary mb-6">
+          Ummah Partner{" "}
+        </h2>
 
         {/* Tombol Navigasi Mode */}
         <div className="grid grid-cols-2 gap-3 mb-6 border-b pb-4 border-gray-200">
           <button
             onClick={() => setCurrentMode("chat")}
             className={`flex items-center justify-center px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-              currentMode === "chat" ? "bg-[#316B6C] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              currentMode === "chat"
+                ? "bg-[#316B6C] text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
             <FaRobot className="mr-2" /> Chat Umum
@@ -671,7 +826,9 @@ export default function UmmahPartner() {
           <button
             onClick={() => setCurrentMode("askPdf")}
             className={`flex items-center justify-center px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-              currentMode === "askPdf" ? "bg-[#316B6C] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              currentMode === "askPdf"
+                ? "bg-[#316B6C] text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
             <FaFilePdf className="mr-2" /> Tanya PDF
@@ -679,7 +836,9 @@ export default function UmmahPartner() {
           <button
             onClick={() => setCurrentMode("summarizePdf")}
             className={`flex items-center justify-center px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-              currentMode === "summarizePdf" ? "bg-[#316B6C] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              currentMode === "summarizePdf"
+                ? "bg-[#316B6C] text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
             <FaBookOpen className="mr-2" /> Ringkas PDF
@@ -687,7 +846,9 @@ export default function UmmahPartner() {
           <button
             onClick={() => setCurrentMode("quiz")}
             className={`flex items-center justify-center px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
-              currentMode === "quiz" ? "bg-[#316B6C] text-white shadow-md" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+              currentMode === "quiz"
+                ? "bg-[#316B6C] text-white shadow-md"
+                : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
             <FaQuestionCircle className="mr-2" /> Buat Kuis
@@ -695,14 +856,21 @@ export default function UmmahPartner() {
         </div>
 
         {/* Tombol Buka Riwayat Percakapan */}
-        <button onClick={() => setShowHistoryModal(true)} className="w-full bg-secondary  py-3 rounded-xl font-semibold hover:bg-secondary-dark transition-colors duration-300 flex items-center justify-center shadow-md mb-6">
+        <button
+          onClick={() => setShowHistoryModal(true)}
+          className="w-full bg-secondary  py-3 rounded-xl font-semibold hover:bg-secondary-dark transition-colors duration-300 flex items-center justify-center shadow-md mb-6"
+        >
           <FaHistory className="mr-2" /> Lihat Riwayat Percakapan
         </button>
 
         {/* --- Pilihan Sumber PDF (Database / Upload) --- */}
-        {(currentMode === "askPdf" || currentMode === "summarizePdf" || currentMode === "quiz") && (
+        {(currentMode === "askPdf" ||
+          currentMode === "summarizePdf" ||
+          currentMode === "quiz") && (
           <div className="mb-4 p-4 border border-gray-200 rounded-xl bg-gray-50 shadow-sm">
-            <label className="block text-sm font-medium text-gray-700 mb-3">Pilih Sumber PDF:</label>
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              Pilih Sumber PDF:
+            </label>
             <div className="flex flex-col sm:flex-row gap-3 mb-4">
               <label className="inline-flex items-center cursor-pointer">
                 <input
@@ -718,7 +886,9 @@ export default function UmmahPartner() {
                   }}
                   className="form-radio h-5 w-5 text-primary focus:ring-primary"
                 />
-                <span className="ml-2 text-gray-700 text-sm">Dari Database</span>
+                <span className="ml-2 text-gray-700 text-sm">
+                  Dari Database
+                </span>
               </label>
               <label className="inline-flex items-center cursor-pointer">
                 <input
@@ -740,7 +910,9 @@ export default function UmmahPartner() {
 
             {pdfSourceType === "database" && (
               <div className="relative mb-3" ref={searchDropdownRef}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Cari Materi di Database:</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Cari Materi di Database:
+                </label>
                 <div className="relative">
                   <input
                     type="text"
@@ -756,27 +928,41 @@ export default function UmmahPartner() {
                   />
                   <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 </div>
-                {showSearchDropdown && searchMateriQuery.length > 0 && filteredDatabaseMateris.length > 0 && (
-                  <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-40 overflow-y-auto mt-1">
-                    {filteredDatabaseMateris.map((materi) => (
-                      <li
-                        key={materi._id}
-                        className="p-2 hover:bg-gray-100 cursor-pointer text-sm"
-                        onClick={() => {
-                          setSelectedDatabaseMateriId(materi._id);
-                          setSearchMateriQuery(materi.judulMateri);
-                          setShowSearchDropdown(false);
-                        }}
-                      >
-                        {materi.judulMateri}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {showSearchDropdown && searchMateriQuery.length > 0 && filteredDatabaseMateris.length === 0 && <p className="text-sm text-gray-500 mt-2">Tidak ada materi yang cocok.</p>}
+                {showSearchDropdown &&
+                  searchMateriQuery.length > 0 &&
+                  filteredDatabaseMateris.length > 0 && (
+                    <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-40 overflow-y-auto mt-1">
+                      {filteredDatabaseMateris.map((materi) => (
+                        <li
+                          key={materi._id}
+                          className="p-2 hover:bg-gray-100 cursor-pointer text-sm"
+                          onClick={() => {
+                            setSelectedDatabaseMateriId(materi._id);
+                            setSearchMateriQuery(materi.judulMateri);
+                            setShowSearchDropdown(false);
+                          }}
+                        >
+                          {materi.judulMateri}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                {showSearchDropdown &&
+                  searchMateriQuery.length > 0 &&
+                  filteredDatabaseMateris.length === 0 && (
+                    <p className="text-sm text-gray-500 mt-2">
+                      Tidak ada materi yang cocok.
+                    </p>
+                  )}
                 {selectedDatabaseMateriId && (
                   <p className="text-sm text-primary mt-2">
-                    Materi terpilih: <span className="font-semibold">{materis.find((m) => m._id === selectedDatabaseMateriId)?.judulMateri}</span>
+                    Materi terpilih:{" "}
+                    <span className="font-semibold">
+                      {
+                        materis.find((m) => m._id === selectedDatabaseMateriId)
+                          ?.judulMateri
+                      }
+                    </span>
                   </p>
                 )}
               </div>
@@ -784,7 +970,9 @@ export default function UmmahPartner() {
 
             {pdfSourceType === "upload" && (
               <div className="mb-3">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Unggah File PDF Baru:</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Unggah File PDF Baru:
+                </label>
                 <input
                   type="file"
                   accept=".pdf"
@@ -796,7 +984,11 @@ export default function UmmahPartner() {
                   }}
                   className="w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary"
                 />
-                {uploadedPdfFileName && <p className="text-sm text-primary mt-2">File terpilih: {uploadedPdfFileName}</p>}
+                {uploadedPdfFileName && (
+                  <p className="text-sm text-primary mt-2">
+                    File terpilih: {uploadedPdfFileName}
+                  </p>
+                )}
               </div>
             )}
 
@@ -805,14 +997,30 @@ export default function UmmahPartner() {
                 <FaSpinner className="animate-spin mr-2" /> Memproses PDF...
               </p>
             )}
-            {(!isPdfProcessing && !pdfTextContent && pdfSourceType === "database" && !selectedDatabaseMateriId) || (pdfSourceType === "upload" && !uploadedPdfFile) ? (
-              <p className="text-red-500 text-sm mt-2">Pilih atau unggah PDF untuk memulai.</p>
+            {(!isPdfProcessing &&
+              !pdfTextContent &&
+              pdfSourceType === "database" &&
+              !selectedDatabaseMateriId) ||
+            (pdfSourceType === "upload" && !uploadedPdfFile) ? (
+              <p className="text-red-500 text-sm mt-2">
+                Pilih atau unggah PDF untuk memulai.
+              </p>
             ) : !isPdfProcessing && pdfTextContent ? (
-              <p className="text-green-600 text-sm mt-2">Teks PDF berhasil dimuat.</p>
+              <p className="text-green-600 text-sm mt-2">
+                Teks PDF berhasil dimuat.
+              </p>
             ) : (
               !isPdfProcessing &&
-              ((pdfSourceType === "database" && selectedDatabaseMateriId && !pdfTextContent) || (pdfSourceType === "upload" && uploadedPdfFile && !pdfTextContent)) && (
-                <p className="text-red-500 text-sm mt-2">Gagal memuat teks PDF. Pastikan URL PDF valid atau file tidak rusak.</p>
+              ((pdfSourceType === "database" &&
+                selectedDatabaseMateriId &&
+                !pdfTextContent) ||
+                (pdfSourceType === "upload" &&
+                  uploadedPdfFile &&
+                  !pdfTextContent)) && (
+                <p className="text-red-500 text-sm mt-2">
+                  Gagal memuat teks PDF. Pastikan URL PDF valid atau file tidak
+                  rusak.
+                </p>
               )
             )}
           </div>
@@ -820,7 +1028,9 @@ export default function UmmahPartner() {
 
         {currentMode === "askPdf" && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800">Tanya tentang PDF</h3>
+            <h3 className="text-lg font-semibold text-gray-800">
+              Tanya tentang PDF
+            </h3>
             <textarea
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-primary focus:border-primary resize-none"
               rows="4"
@@ -832,7 +1042,12 @@ export default function UmmahPartner() {
             <button
               onClick={handleAskPdfSubmit}
               className="w-full bg-[#316B6C] text-white py-3 rounded-xl font-semibold hover:bg-[#316B6C]-dark transition-colors duration-300 disabled:opacity-50 shadow-md"
-              disabled={isLoading || isPdfProcessing || !pdfTextContent.trim() || !askPdfQuestion.trim()}
+              disabled={
+                isLoading ||
+                isPdfProcessing ||
+                !pdfTextContent.trim() ||
+                !askPdfQuestion.trim()
+              }
             >
               Tanya AI
             </button>
@@ -842,7 +1057,10 @@ export default function UmmahPartner() {
         {currentMode === "summarizePdf" && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-800">Ringkas PDF</h3>
-            <p className="text-sm text-gray-600">Klik tombol di bawah untuk mendapatkan ringkasan poin-poin penting dari materi PDF yang dipilih.</p>
+            <p className="text-sm text-gray-600">
+              Klik tombol di bawah untuk mendapatkan ringkasan poin-poin penting
+              dari materi PDF yang dipilih.
+            </p>
             <button
               onClick={handleSummarizePdf}
               className="w-full bg-[#316B6C] text-white py-3 rounded-xl font-semibold hover:bg-[#316B6C]-dark transition-colors duration-300 disabled:opacity-50 shadow-md"
@@ -855,9 +1073,13 @@ export default function UmmahPartner() {
 
         {currentMode === "quiz" && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-800">Buat Kuis dari PDF</h3>
+            <h3 className="text-lg font-semibold text-gray-800">
+              Buat Kuis dari PDF
+            </h3>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tipe Kuis:</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Tipe Kuis:
+              </label>
               <div className="flex flex-col sm:flex-row gap-3 mb-3">
                 <label className="inline-flex items-center cursor-pointer">
                   <input
@@ -869,7 +1091,9 @@ export default function UmmahPartner() {
                     className="form-radio h-5 w-5 text-primary focus:ring-primary"
                     disabled={isPdfProcessing || !pdfTextContent.trim()}
                   />
-                  <span className="ml-2 text-gray-700 text-sm">Pilihan Ganda</span>
+                  <span className="ml-2 text-gray-700 text-sm">
+                    Pilihan Ganda
+                  </span>
                 </label>
                 <label className="inline-flex items-center cursor-pointer">
                   <input
@@ -881,12 +1105,16 @@ export default function UmmahPartner() {
                     className="form-radio h-5 w-5 text-primary focus:ring-primary"
                     disabled={isPdfProcessing || !pdfTextContent.trim()}
                   />
-                  <span className="ml-2 text-gray-700 text-sm">Isian Singkat</span>
+                  <span className="ml-2 text-gray-700 text-sm">
+                    Isian Singkat
+                  </span>
                 </label>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Jumlah Pertanyaan:</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Jumlah Pertanyaan:
+              </label>
               <select
                 value={numQuestions}
                 onChange={(e) => setNumQuestions(Number(e.target.value))}
@@ -913,7 +1141,10 @@ export default function UmmahPartner() {
               <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200 shadow-sm">
                 <h4 className="text-md font-semibold mb-3">Kuis Anda:</h4>
                 {quizQuestions.map((q, index) => (
-                  <div key={index} className="mb-4 p-3 border border-gray-200 rounded-lg bg-white shadow-sm">
+                  <div
+                    key={index}
+                    className="mb-4 p-3 border border-gray-200 rounded-lg bg-white shadow-sm"
+                  >
                     <p className="font-medium text-gray-800">
                       {index + 1}. {q.question}
                     </p>
@@ -931,7 +1162,10 @@ export default function UmmahPartner() {
                     </p>
                   </div>
                 ))}
-                <button onClick={handleDownloadQuizPdf} className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 mt-4 flex items-center justify-center shadow-md">
+                <button
+                  onClick={handleDownloadQuizPdf}
+                  className="w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700 mt-4 flex items-center justify-center shadow-md"
+                >
                   <FaDownload className="mr-2" /> Unduh Kuis sebagai PDF
                 </button>
               </div>
@@ -942,17 +1176,36 @@ export default function UmmahPartner() {
 
       {/* Area Chat / Respon AI */}
       <div className="flex-1 flex flex-col bg-white shadow-lg md:ml-4 rounded-lg md:rounded-l-none">
-        <div className="p-4 bg-[#316B6C] text-white text-center text-xl font-semibold rounded-t-lg shadow-md">Obrolan dengan Lumma AI</div>
-        <div ref={chatContainerRef} className="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50">
+        <div className="p-4 bg-[#316B6C] text-white text-center text-xl font-semibold rounded-t-lg shadow-md">
+          Obrolan dengan Luma AI
+        </div>
+        <div
+          ref={chatContainerRef}
+          className="flex-1 p-6 overflow-y-auto space-y-4 bg-gray-50"
+        >
           {chatHistory.length === 0 ? (
             <div className="text-center text-gray-500 mt-10 p-4 bg-white rounded-xl shadow-sm">
-              <p className="text-lg mb-2">Halo aku Luma AI!</p>
-              <p className="text-sm">Mulai chat baru atau klik "Lihat Riwayat Percakapan" di panel kiri untuk melanjutkan sesi lama.</p>
+              <p className="text-lg mb-2">Halo, aku Luma AI!</p>
+              <p className="text-sm">
+                Mulai chat baru atau klik "Lihat Riwayat Percakapan" di panel
+                kiri untuk melanjutkan sesi lama.
+              </p>
             </div>
           ) : (
             chatHistory.map((msg, index) => (
-              <div key={index} className={`flex items-start ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[80%] p-4 rounded-xl shadow-md relative ${msg.role === "user" ? "bg-blue-500 text-white rounded-br-none" : "bg-gray-200 text-gray-800 rounded-bl-none"}`}>
+              <div
+                key={index}
+                className={`flex items-start ${
+                  msg.role === "user" ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`max-w-[80%] p-4 rounded-xl shadow-md relative ${
+                    msg.role === "user"
+                      ? "bg-blue-500 text-white rounded-br-none"
+                      : "bg-gray-200 text-gray-800 rounded-bl-none"
+                  }`}
+                >
                   <p className="font-semibold mb-1 flex items-center">
                     {msg.role === "user" ? (
                       <>
@@ -960,12 +1213,14 @@ export default function UmmahPartner() {
                       </>
                     ) : (
                       <>
-                        <FaRobot className="mx-2 text-gray-600" /> UmmahPartner
+                        <FaRobot className="mx-2 text-gray-600" /> Ummah Partner
                       </>
                     )}
                     <button
                       onClick={() => handleCopyChat(msg.parts[0].text)}
-                      className={`ml-auto opacity-70 hover:opacity-100 transition-opacity focus:outline-none ${msg.role === "user" ? "text-white" : "text-gray-600"}`}
+                      className={`ml-auto opacity-70 hover:opacity-100 transition-opacity focus:outline-none ${
+                        msg.role === "user" ? "text-white" : "text-gray-600"
+                      }`}
                       title="Salin pesan"
                     >
                       <FaCopy className="text-sm ml-2" />
@@ -980,7 +1235,7 @@ export default function UmmahPartner() {
             <div className="flex justify-start items-start">
               <div className="max-w-[70%] p-4 rounded-xl shadow-md bg-gray-200 text-gray-800 rounded-bl-none">
                 <p className="font-semibold mb-1 flex items-center">
-                  <FaRobot className="mr-2 text-gray-600" /> UmmahPartner
+                  <FaRobot className="mr-2 text-gray-600" /> Ummah Partner
                 </p>
                 <p className="flex items-center">
                   <FaSpinner className="animate-spin mr-2" /> Mengetik...
@@ -991,7 +1246,10 @@ export default function UmmahPartner() {
         </div>
         {/* Input Chat Umum */}
         {currentMode === "chat" && (
-          <form onSubmit={handleGeneralChatSubmit} className="p-4 border-t border-gray-200 bg-white rounded-b-lg shadow-inner">
+          <form
+            onSubmit={handleGeneralChatSubmit}
+            className="p-4 border-t border-gray-200 bg-white rounded-b-lg shadow-inner"
+          >
             <div className="flex items-center">
               <textarea
                 className="flex-1 p-3 border border-gray-300 rounded-xl resize-none focus:ring-primary focus:border-primary mr-3 text-base"
@@ -1006,7 +1264,11 @@ export default function UmmahPartner() {
                 }}
                 disabled={isLoading}
               />
-              <button type="submit" className="bg-[#316B6C] text-white p-3 rounded-full hover:bg-[#316B6C]-dark transition-colors duration-300 disabled:opacity-50 shadow-md" disabled={isLoading || !inputMessage.trim()}>
+              <button
+                type="submit"
+                className="bg-[#316B6C] text-white p-3 rounded-full hover:bg-[#316B6C]-dark transition-colors duration-300 disabled:opacity-50 shadow-md"
+                disabled={isLoading || !inputMessage.trim()}
+              >
                 <FaPaperPlane className="text-lg" />
               </button>
             </div>
@@ -1019,13 +1281,21 @@ export default function UmmahPartner() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col">
             <div className="p-5 border-b border-gray-200 flex justify-between items-center bg-[#316B6C] rounded-t-xl">
-              <h3 className="text-xl font-semibold text-white">Riwayat Percakapan</h3>
-              <button onClick={() => setShowHistoryModal(false)} className="text-white hover:text-gray-200">
+              <h3 className="text-xl font-semibold text-white">
+                Riwayat Percakapan
+              </h3>
+              <button
+                onClick={() => setShowHistoryModal(false)}
+                className="text-white hover:text-gray-200"
+              >
                 <FaTimes className="text-2xl" />
               </button>
             </div>
             <div className="p-5 flex-1 overflow-y-auto">
-              <button onClick={startNewChat} className="w-full bg-secondary py-2 rounded-lg font-semibold hover:bg-secondary-dark transition-colors duration-300 flex items-center justify-center shadow-md mb-4">
+              <button
+                onClick={startNewChat}
+                className="w-full bg-secondary py-2 rounded-lg font-semibold hover:bg-secondary-dark transition-colors duration-300 flex items-center justify-center shadow-md mb-4"
+              >
                 <FaPlus className="mr-2" /> Mulai Chat Baru
               </button>
               {isHistoryLoading ? (
@@ -1033,18 +1303,27 @@ export default function UmmahPartner() {
                   <FaSpinner className="animate-spin mr-2" /> Memuat riwayat...
                 </p>
               ) : chatSessions.length === 0 ? (
-                <p className="text-gray-500 text-center text-sm py-4">Belum ada riwayat chat.</p>
+                <p className="text-gray-500 text-center text-sm py-4">
+                  Belum ada riwayat chat.
+                </p>
               ) : (
                 <ul className="space-y-3">
                   {chatSessions.map((session) => (
                     <li
                       key={session._id}
                       className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-all duration-200 ${
-                        currentChatSessionId === session._id ? "bg-[#316B6C] text-primary-dark font-semibold shadow-inner" : "bg-gray-100 hover:bg-gray-200"
+                        currentChatSessionId === session._id
+                          ? "bg-[#316B6C] text-white font-semibold shadow-inner"
+                          : "bg-gray-100 hover:bg-gray-200"
                       }`}
                       onClick={() => loadChatSession(session._id)}
                     >
-                      <span className="truncate flex-1 text-sm">{session.title || `Sesi Chat ${new Date(session.createdAt).toLocaleDateString()}`}</span>
+                      <span className="truncate flex-1 text-sm">
+                        {session.title ||
+                          `Sesi Chat ${new Date(
+                            session.createdAt
+                          ).toLocaleDateString()}`}
+                      </span>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();

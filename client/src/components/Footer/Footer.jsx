@@ -15,7 +15,7 @@ import { UserContext } from "../../context/UserContext";
 export default function Footer() {
   const { user } = useContext(UserContext);
   return (
-    <footer className="bg-primary-dark text-grey-500 text-body-sm mt-20">
+    <footer className="bg-primary-dark text-grey-500 text-body-sm mt-0">
       <div className="max-w-7xl mx-auto px-6 md:px-20 py-16 grid grid-cols-1 md:grid-cols-3 gap-12 items-start">
         <div className="flex flex-col gap-10">
           <img

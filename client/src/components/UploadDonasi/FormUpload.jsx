@@ -78,6 +78,21 @@ export default function FormUpload() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!user) {
+      Swal.fire({
+        icon: "warning",
+        title: "Anda Belum Login",
+        text: "Silakan login terlebih dahulu untuk dapat mengirim donasi.",
+        confirmButtonText: "Login Sekarang",
+        showCancelButton: true,
+        cancelButtonText: "Nanti Saja"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/masuk");
+        }
+      });
+      return; 
+    }
     if (user?.role === "komunitas") {
       Swal.fire({
         icon: "warning",

@@ -120,7 +120,7 @@ function Navbar({
             {navVariant === 2 && (
               <img
                 src={LenteraUmatLogo2}
-                className="w-32 940:w-36  "
+                className="w-32 940:w-36 "
                 alt="Logo"
               />
             )}
@@ -133,7 +133,7 @@ function Navbar({
             menuOpen ? "top-0" : "-top-[450px]"
           }`}
         >
-          <div className="w-full flex-col flex 940:flex-row py-16 940:py-0 text-center justify-center gap-10">
+          <div className="w-full flex-col flex 940:flex-row py-16 940:py-0 text-center justify-center gap-4 md:gap-10">
             <Link
               to={paths.home}
               className={
@@ -241,7 +241,7 @@ function Navbar({
           >
             <svg
               className={`w-6 h-6 ${
-                navVariant === 1 || menuOpen ? "text-black" : "text-white"
+                navVariant === 1 || menuOpen ? "text-primary" : "text-white"
               }`}
               fill="none"
               stroke="currentColor"
