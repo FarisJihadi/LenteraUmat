@@ -120,7 +120,7 @@ export default function UmmahPartner() {
       };
     }
 
-    const apiKey = "AIzaSyCh6EAMccK82g-VqX4dOr1kVGYmACK6wkM"; // API key akan diinject oleh Canvas
+    const apiKey = ""; // API key akan diinject oleh Canvas
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
     try {
